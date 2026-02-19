@@ -93,7 +93,7 @@ export default function Home() {
           </div>
 
           {/* Tab Content */}
-          <div className="p-3 md:p-4 flex-1 overflow-y-auto custom-scrollbar" role="tabpanel" id={`tabpanel-${activeTab}`} aria-label={activeTab}>
+          <div className="p-2 md:p-4 flex-1 overflow-y-auto custom-scrollbar" role="tabpanel" id={`tabpanel-${activeTab}`} aria-label={activeTab}>
             {activeTab === 'calculator' && <Calculator />}
             {activeTab === 'bulk' && <BulkConversion />}
             {activeTab === 'history' && <History />}
