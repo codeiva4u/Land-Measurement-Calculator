@@ -41,25 +41,23 @@ export default function Home() {
       style={{ paddingTop: 'max(8px, env(safe-area-inset-top))', paddingBottom: 'env(safe-area-inset-bottom)' }}>
 
       <div className="max-w-4xl mx-auto relative z-10 w-full">
-        {/* Header Row: Developer Center + Language Right */}
-        <header className="mb-1.5 animate-fade-in">
-          <div className="flex items-center justify-between mb-1">
-            {/* App Title - Left */}
-            <h1 className="text-xs md:text-sm font-bold bg-gradient-to-r from-blue-400 to-green-400
+        <header className="mb-1 animate-fade-in">
+          {/* Developer Photo - Top Center */}
+          <div className="flex flex-col items-center mb-0.5">
+            <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-blue-400/60 shadow-lg">
+              <img src="/developer.png" alt="Sunil Arya" className="w-full h-full object-cover" />
+            </div>
+            <p className="text-[7px] text-gray-500 uppercase tracking-wider mt-0.5">Developed By</p>
+            <p className="text-[9px] font-semibold text-blue-400">Sunil Arya</p>
+          </div>
+
+          {/* Title + Language Row - Below photo */}
+          <div className="flex items-center justify-between">
+            <h1 className="text-[10px] md:text-xs font-bold bg-gradient-to-r from-blue-400 to-green-400
                          bg-clip-text text-transparent leading-tight">
               {t('appTitle', language)}
             </h1>
-            {/* Language Switcher - Right (compact) */}
             <LanguageSwitcher />
-          </div>
-
-          {/* Developer Photo - Centered */}
-          <div className="flex flex-col items-center mb-1">
-            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-blue-400/60 shadow-lg">
-              <img src="/developer.png" alt="Sunil Arya" className="w-full h-full object-cover" />
-            </div>
-            <p className="text-[8px] text-gray-500 uppercase tracking-wider mt-0.5">Developed By</p>
-            <p className="text-[10px] font-semibold text-blue-400">Sunil Arya</p>
           </div>
         </header>
 
