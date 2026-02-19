@@ -73,7 +73,7 @@ export default function Home() {
                       shadow-[0_20px_70px_-10px_rgba(0,0,0,0.8)]
                       overflow-hidden animate-slide-up flex flex-col
                       transition-all duration-500
-                      h-[calc(100vh-110px)] md:h-[calc(100vh-140px)]">
+                      max-h-[calc(100vh-110px)] md:max-h-[calc(100vh-140px)]">
           {/* Tabs */}
           <div className="flex overflow-x-auto border-b border-white/[0.08] bg-white/[0.02] backdrop-blur-lg flex-shrink-0" role="tablist" aria-label={t('appTitle', language)}>
             {tabs.map((tab) => {
