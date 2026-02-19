@@ -66,13 +66,13 @@ export default function Calculator() {
   };
 
   return (
-    <div className="space-y-0.5">
+    <div className="space-y-1">
       {ALL_UNITS.map((unit) => (
         <div key={unit}>
           <div className="group">
             <label
               htmlFor={unit}
-              className={`block text-[9px] font-semibold leading-tight ${labelColor[unit]}`}
+              className={`block text-[10px] font-semibold mb-0.5 ${labelColor[unit]}`}
             >
               {getUnitName(unit, language)}
             </label>
@@ -84,8 +84,8 @@ export default function Calculator() {
               onChange={(e) => handleChange(unit, e.target.value)}
               placeholder="0"
               autoComplete="off"
-              className={`w-full px-3 py-1 bg-white/[0.05] border border-white/[0.12] rounded-lg
-                         text-white text-sm font-medium placeholder-gray-600
+              className={`w-full px-3 py-2 bg-white/[0.05] border border-white/[0.12] rounded-lg
+                         text-white text-sm font-semibold placeholder-gray-600
                          focus:outline-none focus:ring-2 focus:bg-white/[0.08]
                          active:bg-white/[0.08] transition-all duration-200 ${focusRing[unit]}`}
             />
