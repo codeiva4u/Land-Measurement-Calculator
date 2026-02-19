@@ -44,7 +44,7 @@ export default function Home() {
         <header className="mb-1 animate-fade-in">
           {/* Developer Photo - Top Center */}
           <div className="flex flex-col items-center mb-0.5">
-            <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-blue-400/60 shadow-lg">
+            <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden border-2 border-blue-400/60 shadow-[0_0_20px_rgba(59,130,246,0.3)] ring-2 ring-blue-500/20">
               <img src="/developer.png" alt="Sunil Arya" className="w-full h-full object-cover" />
             </div>
             <p className="text-[7px] text-gray-500 uppercase tracking-wider mt-0.5">Developed By</p>
