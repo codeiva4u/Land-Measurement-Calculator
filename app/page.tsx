@@ -39,32 +39,27 @@ export default function Home() {
   return (
     <main className="min-h-screen text-white p-2 md:p-4 relative"
       style={{ paddingTop: 'max(8px, env(safe-area-inset-top))', paddingBottom: 'env(safe-area-inset-bottom)' }}>
-      {/* Language Switcher - Top Right */}
-      <div className="absolute top-2 right-2 z-20">
-        <LanguageSwitcher />
-      </div>
 
-      <div className="max-w-4xl mx-auto relative z-10 w-full pt-10">
-        {/* Header */}
-        <header className="mb-1 animate-fade-in">
-          <div className="flex items-center gap-3 mb-2">
+      <div className="max-w-4xl mx-auto relative z-10 w-full">
+        {/* Header Row: Developer Center + Language Right */}
+        <header className="mb-1.5 animate-fade-in">
+          <div className="flex items-center justify-between mb-1">
             {/* App Title - Left */}
-            <div className="flex-1">
-              <h1 className="text-sm md:text-base font-bold bg-gradient-to-r from-blue-400 to-green-400
-                           bg-clip-text text-transparent leading-tight">
-                {t('appTitle', language)}
-              </h1>
+            <h1 className="text-xs md:text-sm font-bold bg-gradient-to-r from-blue-400 to-green-400
+                         bg-clip-text text-transparent leading-tight">
+              {t('appTitle', language)}
+            </h1>
+            {/* Language Switcher - Right (compact) */}
+            <LanguageSwitcher />
+          </div>
+
+          {/* Developer Photo - Centered */}
+          <div className="flex flex-col items-center mb-1">
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-blue-400/60 shadow-lg">
+              <img src="/developer.png" alt="Sunil Arya" className="w-full h-full object-cover" />
             </div>
-            {/* Developer Info - Right (compact on mobile) */}
-            <div className="flex items-center gap-2">
-              <div className="text-right">
-                <p className="text-[8px] text-gray-500 uppercase tracking-wider">Dev By</p>
-                <p className="text-[10px] font-bold text-blue-400">Sunil Arya</p>
-              </div>
-              <div className="w-10 h-10 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-blue-400/70 shadow-lg flex-shrink-0">
-                <img src="/developer.png" alt="Sunil Arya" className="w-full h-full object-cover" />
-              </div>
-            </div>
+            <p className="text-[8px] text-gray-500 uppercase tracking-wider mt-0.5">Developed By</p>
+            <p className="text-[10px] font-semibold text-blue-400">Sunil Arya</p>
           </div>
         </header>
 
