@@ -6,7 +6,7 @@ import { convertValue, isValidNumber, formatNumber } from '@/lib/conversions';
 import { getUnitName } from '@/lib/translations';
 import { useStore } from '@/store/useStore';
 
-const ALL_UNITS: LandUnit[] = ['biswa', 'squareFeet', 'biswansi', 'squareMeter', 'bigha', 'hectare'];
+const ALL_UNITS: LandUnit[] = ['biswa', 'squareFeet', 'squareMeter', 'bigha', 'hectare'];
 
 export default function Calculator() {
   const { language, addToHistory } = useStore();
