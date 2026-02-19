@@ -20,6 +20,7 @@ const translations = {
     clearResults: 'Clear Results',
     results: 'Results',
     units: {
+      biswansi: 'Biswansi',
       biswa: 'Biswa',
       bigha: 'Bigha',
       hectare: 'Hectare',
@@ -31,6 +32,7 @@ const translations = {
       biswaToSqM: '1 Biswa = 126.486 Square Meter',
       biswaToSqFt: '1 Biswa = 1361 Square Feet',
       biswaToHectare: '1 Biswa = 0.0126486 Hectare',
+      biswaToSwansi: '1 Biswa = 20 Biswansi',
       bighaToBiswa: '1 Bigha = 20 Biswa',
       hectareToSqM: '1 Hectare = 10,000 Square Meter',
     },
@@ -51,6 +53,7 @@ const translations = {
     clearResults: 'परिणाम साफ़ करें',
     results: 'परिणाम',
     units: {
+      biswansi: 'बिस्वाँसी',
       biswa: 'बिस्वा',
       bigha: 'बीघा',
       hectare: 'हैक्टेयर',
@@ -62,6 +65,7 @@ const translations = {
       biswaToSqM: '1 बिस्वा = 126.486 वर्ग मीटर',
       biswaToSqFt: '1 बिस्वा = 1361 वर्ग फीट',
       biswaToHectare: '1 बिस्वा = 0.0126486 हैक्टेयर',
+      biswaToSwansi: '1 बिस्वा = 20 बिस्वाँसी',
       bighaToBiswa: '1 बीघा = 20 बिस्वा',
       hectareToSqM: '1 हैक्टेयर = 10,000 वर्ग मीटर',
     },
@@ -75,11 +79,11 @@ export function t(key: string, lang: Language): string {
   const keys = key.split('.');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let value: any = translations[lang];
-  
+
   for (const k of keys) {
     value = value?.[k];
   }
-  
+
   return value || key;
 }
 

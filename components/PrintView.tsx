@@ -19,14 +19,14 @@ export default function PrintView() {
   if (history.length === 0) {
     return (
       <div className="text-center py-12 text-gray-400">
-        {language === 'hi' 
-          ? 'प्रिंट करने के लिए कोई डेटा नहीं' 
+        {language === 'hi'
+          ? 'प्रिंट करने के लिए कोई डेटा नहीं'
           : 'No data to print'}
       </div>
     );
   }
 
-  const units: LandUnit[] = ['biswa', 'squareFeet', 'squareMeter', 'bigha', 'hectare'];
+  const units: LandUnit[] = ['biswa', 'biswansi', 'squareFeet', 'squareMeter', 'bigha', 'hectare'];
 
   return (
     <div>
@@ -64,7 +64,7 @@ export default function PrintView() {
                   {new Date(entry.timestamp).toLocaleString(language === 'hi' ? 'hi-IN' : 'en-IN')}
                 </span>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-3">
                 {units.map((unit) => (
                   <div key={unit} className="flex justify-between py-1">
@@ -81,6 +81,7 @@ export default function PrintView() {
         <div className="mt-8 pt-8 border-t border-gray-300 break-inside-avoid">
           <h2 className="text-xl font-bold mb-4">{t('formulas.title', language)}</h2>
           <ul className="space-y-2 text-sm">
+            <li>• {t('formulas.biswaToSwansi', language)}</li>
             <li>• {t('formulas.biswaToSqM', language)}</li>
             <li>• {t('formulas.biswaToSqFt', language)}</li>
             <li>• {t('formulas.biswaToHectare', language)}</li>

@@ -20,7 +20,7 @@ export default function History() {
     );
   }
 
-  const units: LandUnit[] = ['biswa', 'squareFeet', 'squareMeter', 'bigha', 'hectare'];
+  const units: LandUnit[] = ['biswa', 'biswansi', 'squareFeet', 'squareMeter', 'bigha', 'hectare'];
 
   return (
     <div className="space-y-4">

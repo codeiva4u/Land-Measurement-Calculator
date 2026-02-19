@@ -1,7 +1,8 @@
 /**
  * Land measurement units supported by the calculator
  */
-export type LandUnit = 
+export type LandUnit =
+  | 'biswansi'
   | 'biswa'
   | 'bigha'
   | 'hectare'
@@ -17,6 +18,7 @@ export type Language = 'hi' | 'en';
  * Conversion values object with all unit values
  */
 export interface ConversionValues {
+  biswansi: number;
   biswa: number;
   bigha: number;
   hectare: number;

@@ -48,6 +48,7 @@ export const useStore = create<AppState>()(
 
       // Current values state
       currentValues: {
+        biswansi: 0,
         biswa: 0,
         bigha: 0,
         hectare: 0,

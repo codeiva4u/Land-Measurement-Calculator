@@ -5,7 +5,61 @@ import type { LandUnit, BulkConversionResult } from '@/types';
 import { convertValue, formatNumber } from '@/lib/conversions';
 import { getUnitName } from '@/lib/translations';
 import { useStore } from '@/store/useStore';
-import { Calculator, X } from 'lucide-react';
+import { Calculator, X, AlertCircle } from 'lucide-react';
+
+/**
+ * Unit alias mapping — supports user-friendly names
+ * Maps various input formats to internal LandUnit keys
+ */
+const UNIT_ALIASES: Record<string, LandUnit> = {
+  // Biswansi aliases
+  biswansi: 'biswansi',
+  'biswasi': 'biswansi',
+  'बिस्वाँसी': 'biswansi',
+  'बिस्वांसी': 'biswansi',
+
+  // Biswa aliases
+  biswa: 'biswa',
+  'bisva': 'biswa',
+  'बिस्वा': 'biswa',
+
+  // Bigha aliases
+  bigha: 'bigha',
+  'बीघा': 'bigha',
+
+  // Hectare aliases
+  hectare: 'hectare',
+  'हैक्टेयर': 'hectare',
+  ha: 'hectare',
+
+  // Square Meter aliases
+  squaremeter: 'squareMeter',
+  'sq meter': 'squareMeter',
+  'sq m': 'squareMeter',
+  'square meter': 'squareMeter',
+  'square meters': 'squareMeter',
+  sqm: 'squareMeter',
+  'वर्ग मीटर': 'squareMeter',
+  'm2': 'squareMeter',
+
+  // Square Feet aliases
+  squarefeet: 'squareFeet',
+  'sq ft': 'squareFeet',
+  'sq feet': 'squareFeet',
+  'square feet': 'squareFeet',
+  'square foot': 'squareFeet',
+  sqft: 'squareFeet',
+  'वर्ग फीट': 'squareFeet',
+  'ft2': 'squareFeet',
+};
+
+/**
+ * Resolves a user-typed unit string to a LandUnit
+ */
+function resolveUnit(unitStr: string): LandUnit | null {
+  const normalized = unitStr.trim().toLowerCase();
+  return UNIT_ALIASES[normalized] || null;
+}
 
 /**
  * Bulk conversion component for converting multiple values at once
@@ -14,6 +68,7 @@ export default function BulkConversion() {
   const { language } = useStore();
   const [input, setInput] = useState('');
   const [results, setResults] = useState<BulkConversionResult[]>([]);
+  const [errors, setErrors] = useState<string[]>([]);
 
   /**
    * Parses bulk input and performs conversions
@@ -21,51 +76,75 @@ export default function BulkConversion() {
   const handleCalculate = () => {
     const lines = input.trim().split('\n').filter(line => line.trim());
     const newResults: BulkConversionResult[] = [];
+    const newErrors: string[] = [];
 
     for (const line of lines) {
-      // Parse format: "100 hectare" or "50 bigha" or "1000 squareMeter"
-      const match = line.trim().match(/^([\d.]+)\s*(biswa|bigha|hectare|squareMeter|squareFeet)$/i);
-      
+      // Parse format: "100 hectare" or "50 bigha" or "1000 sq meter"
+      const match = line.trim().match(/^([\d.]+)\s+(.+)$/);
+
       if (match) {
         const value = parseFloat(match[1]);
-        const unit = match[2].toLowerCase() as LandUnit;
-        
-        if (!isNaN(value) && isFinite(value) && value >= 0) {
+        const unitStr = match[2];
+        const unit = resolveUnit(unitStr);
+
+        if (unit && !isNaN(value) && isFinite(value) && value >= 0) {
           const converted = convertValue(value, unit);
           newResults.push({
             input: { value, unit },
             converted,
           });
+        } else if (!unit) {
+          newErrors.push(
+            language === 'hi'
+              ? `❌ अज्ञात इकाई: "${unitStr}" (लाइन: "${line.trim()}")`
+              : `❌ Unknown unit: "${unitStr}" (line: "${line.trim()}")`
+          );
+        } else {
+          newErrors.push(
+            language === 'hi'
+              ? `❌ अमान्य मान: "${line.trim()}"`
+              : `❌ Invalid value: "${line.trim()}"`
+          );
         }
+      } else {
+        newErrors.push(
+          language === 'hi'
+            ? `❌ गलत प्रारूप: "${line.trim()}" — सही प्रारूप: "100 hectare"`
+            : `❌ Invalid format: "${line.trim()}" — correct format: "100 hectare"`
+        );
       }
     }
 
     setResults(newResults);
+    setErrors(newErrors);
   };
 
   const handleClear = () => {
     setInput('');
     setResults([]);
+    setErrors([]);
   };
 
-  const units: LandUnit[] = ['biswa', 'squareFeet', 'squareMeter', 'bigha', 'hectare'];
+  const units: LandUnit[] = ['biswa', 'biswansi', 'squareFeet', 'squareMeter', 'bigha', 'hectare'];
 
   return (
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">
-          {language === 'hi' 
-            ? 'इकाइयों के साथ मान दर्ज करें' 
+        <label htmlFor="bulk-input" className="block text-sm font-medium text-gray-300 mb-2">
+          {language === 'hi'
+            ? 'इकाइयों के साथ मान दर्ज करें'
             : 'Enter values with units'}
         </label>
         <textarea
+          id="bulk-input"
+          aria-label={language === 'hi' ? 'बल्क रूपांतरण मान दर्ज करें' : 'Enter bulk conversion values'}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={
             language === 'hi'
-              ? '100 hectare\n50 bigha\n1000 squareMeter'
-              : '100 hectare\n50 bigha\n1000 squareMeter'
+              ? '100 hectare\n50 bigha\n1000 sq meter\n5000 sq ft'
+              : '100 hectare\n50 bigha\n1000 sq meter\n5000 sq ft'
           }
           rows={6}
           className="w-full px-5 py-4 bg-white/[0.04] backdrop-blur-2xl backdrop-saturate-150
@@ -79,8 +158,8 @@ export default function BulkConversion() {
         />
         <p className="mt-2 text-xs text-gray-400">
           {language === 'hi'
-            ? 'प्रारूप: मान इकाई (उदाहरण: 100 hectare, 50 bigha)'
-            : 'Format: value unit (e.g., 100 hectare, 50 bigha)'}
+            ? 'प्रारूप: मान इकाई (उदाहरण: 100 hectare, 50 bigha, 1000 sq meter, 5000 sq ft)'
+            : 'Format: value unit (e.g., 100 hectare, 50 bigha, 1000 sq meter, 5000 sq ft)'}
         </p>
       </div>
 
@@ -96,7 +175,7 @@ export default function BulkConversion() {
           <Calculator size={18} />
           {language === 'hi' ? 'गणना करें' : 'Calculate'}
         </button>
-        
+
         {(input || results.length > 0) && (
           <button
             onClick={handleClear}
@@ -109,13 +188,26 @@ export default function BulkConversion() {
         )}
       </div>
 
+      {/* Error Messages */}
+      {errors.length > 0 && (
+        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 space-y-1">
+          <div className="flex items-center gap-2 text-red-400 font-medium text-sm mb-2">
+            <AlertCircle size={16} />
+            {language === 'hi' ? 'कुछ लाइनें पार्स नहीं हो सकीं:' : 'Some lines could not be parsed:'}
+          </div>
+          {errors.map((error, i) => (
+            <p key={i} className="text-xs text-red-300">{error}</p>
+          ))}
+        </div>
+      )}
+
       {/* Results Section */}
       {results.length > 0 && (
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-white">
             {language === 'hi' ? 'परिणाम' : 'Results'}
           </h3>
-          
+
           <div className="space-y-4">
             {results.map((result, index) => (
               <div
@@ -127,7 +219,7 @@ export default function BulkConversion() {
                 <div className="text-sm text-blue-400 font-medium mb-3">
                   {formatNumber(result.input.value, result.input.unit)} {getUnitName(result.input.unit, language)}
                 </div>
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                   {units.map((unit) => (
                     <div key={unit} className="flex justify-between">

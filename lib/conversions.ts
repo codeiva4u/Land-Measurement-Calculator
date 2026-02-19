@@ -4,6 +4,7 @@ import type { ConversionValues, LandUnit } from '@/types';
  * Conversion constants based on Lucknow, Uttar Pradesh standards
  * 
  * BASE FORMULAS:
+ * 1 बिस्वा (Biswa) = 20 बिस्वाँसी (Biswansi)
  * 1 बिस्वा (Biswa) = 126.486 वर्ग मीटर (Square Meter)
  * 1 बिस्वा (Biswa) = 1361 वर्ग फीट (Square Feet)
  * 1 बिस्वा (Biswa) = 0.0126486 हैक्टेयर (Hectare)
@@ -13,9 +14,13 @@ import type { ConversionValues, LandUnit } from '@/types';
 
 // Base conversion values (in terms of square meters)
 const BISWA_TO_SQUARE_METER = 126.486;
-const BISWA_TO_SQUARE_FEET = 1361;
+const BISWA_TO_SQUARE_FEET = 1361; // Local standard: 1 बिस्वा = exactly 1361 वर्ग फीट
+const BISWANSI_PER_BISWA = 20; // 1 बिस्वा = 20 बिस्वाँसी
+const BISWANSI_TO_SQUARE_METER = BISWA_TO_SQUARE_METER / BISWANSI_PER_BISWA; // 6.3243
 const BIGHA_TO_BISWA = 20;
 const HECTARE_TO_SQUARE_METER = 10000;
+// Derived from local standard (1 biswa = 126.486 sqm = 1361 sqft) for exact consistency
+const SQUARE_FEET_TO_SQUARE_METER = BISWA_TO_SQUARE_METER / BISWA_TO_SQUARE_FEET; // ~0.092935
 
 // Derived conversions
 const BIGHA_TO_SQUARE_METER = BIGHA_TO_BISWA * BISWA_TO_SQUARE_METER; // 2529.72
@@ -34,6 +39,9 @@ export function convertValue(value: number, fromUnit: LandUnit): ConversionValue
     case 'squareMeter':
       squareMeter = value;
       break;
+    case 'biswansi':
+      squareMeter = value * BISWANSI_TO_SQUARE_METER;
+      break;
     case 'biswa':
       squareMeter = value * BISWA_TO_SQUARE_METER;
       break;
@@ -44,7 +52,7 @@ export function convertValue(value: number, fromUnit: LandUnit): ConversionValue
       squareMeter = value * HECTARE_TO_SQUARE_METER;
       break;
     case 'squareFeet':
-      squareMeter = value / (BISWA_TO_SQUARE_FEET / BISWA_TO_SQUARE_METER);
+      squareMeter = value * SQUARE_FEET_TO_SQUARE_METER;
       break;
     default:
       squareMeter = 0;
@@ -53,10 +61,11 @@ export function convertValue(value: number, fromUnit: LandUnit): ConversionValue
   // Convert from square meters to all other units
   return {
     squareMeter: squareMeter,
+    biswansi: squareMeter / BISWANSI_TO_SQUARE_METER,
     biswa: squareMeter / BISWA_TO_SQUARE_METER,
     bigha: squareMeter / BIGHA_TO_SQUARE_METER,
     hectare: squareMeter / HECTARE_TO_SQUARE_METER,
-    squareFeet: squareMeter * (BISWA_TO_SQUARE_FEET / BISWA_TO_SQUARE_METER),
+    squareFeet: squareMeter / SQUARE_FEET_TO_SQUARE_METER,
   };
 }
 
@@ -66,7 +75,7 @@ export function convertValue(value: number, fromUnit: LandUnit): ConversionValue
  * @returns True if valid, false otherwise
  */
 export function isValidNumber(value: string): boolean {
-  if (value === '' || value === '-') return true; // Allow empty and minus sign
+  if (value === '') return true; // Allow empty for clearing
   const num = parseFloat(value);
   return !isNaN(num) && isFinite(num) && num >= 0;
 }
@@ -79,16 +88,16 @@ export function isValidNumber(value: string): boolean {
  */
 export function formatNumber(value: number, unit?: LandUnit): string {
   if (value === 0) return '0';
-  
+
   // For very small numbers, use scientific notation
   if (Math.abs(value) < 0.000001) {
     return value.toExponential(2);
   }
-  
+
   // Set decimal places based on unit
   let maxDecimals = 2;
   let keepDecimals = false; // For units that must always show decimals
-  
+
   if (unit === 'squareMeter') {
     maxDecimals = 3;
     keepDecimals = true; // Always show 3 decimals for square meter
@@ -96,26 +105,28 @@ export function formatNumber(value: number, unit?: LandUnit): string {
     maxDecimals = 7;
   } else if (unit === 'squareFeet') {
     maxDecimals = 0;
+  } else if (unit === 'biswansi') {
+    maxDecimals = 2;
   }
-  
+
   // Round to maxDecimals places
   const rounded = Math.round(value * Math.pow(10, maxDecimals)) / Math.pow(10, maxDecimals);
-  
+
   // Format with commas for thousands
   const formatted = rounded.toFixed(maxDecimals);
   const [integer, decimal] = formatted.split('.');
   const integerWithCommas = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  
+
   // For squareMeter, always keep 3 decimals
   if (keepDecimals && decimal) {
     return `${integerWithCommas}.${decimal}`;
   }
-  
+
   // Remove trailing zeros from decimal part for other units
   if (decimal) {
     const trimmedDecimal = decimal.replace(/0+$/, '');
     return trimmedDecimal ? `${integerWithCommas}.${trimmedDecimal}` : integerWithCommas;
   }
-  
+
   return integerWithCommas;
 }
