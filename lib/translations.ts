@@ -29,9 +29,9 @@ const translations = {
     },
     formulas: {
       title: 'Conversion Formulas',
-      biswaToSqM: '1 Biswa = 126.486 Square Meter',
+      biswaToSqM: '1 Biswa = 1361 ÷ 10.76 = 126.487 Square Meter',
       biswaToSqFt: '1 Biswa = 1361 Square Feet',
-      biswaToHectare: '1 Biswa = 0.0126486 Hectare',
+      biswaToHectare: '1 Biswa = 0.0126487 Hectare',
       biswaToSwansi: '1 Biswa = 20 Biswansi',
       bighaToBiswa: '1 Bigha = 20 Biswa',
       hectareToSqM: '1 Hectare = 10,000 Square Meter',
@@ -62,9 +62,9 @@ const translations = {
     },
     formulas: {
       title: 'रूपांतरण सूत्र',
-      biswaToSqM: '1 बिस्वा = 126.486 वर्ग मीटर',
+      biswaToSqM: '1 बिस्वा = 1361 ÷ 10.76 = 126.487 वर्ग मीटर',
       biswaToSqFt: '1 बिस्वा = 1361 वर्ग फीट',
-      biswaToHectare: '1 बिस्वा = 0.0126486 हैक्टेयर',
+      biswaToHectare: '1 बिस्वा = 0.0126487 हैक्टेयर',
       biswaToSwansi: '1 बिस्वा = 20 बिस्वाँसी',
       bighaToBiswa: '1 बीघा = 20 बिस्वा',
       hectareToSqM: '1 हैक्टेयर = 10,000 वर्ग मीटर',

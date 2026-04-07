@@ -5,23 +5,21 @@ import type { ConversionValues, LandUnit } from '@/types';
  * 
  * BASE FORMULAS:
  * 1 बिस्वा (Biswa) = 20 बिस्वाँसी (Biswansi)
- * 1 बिस्वा (Biswa) = 126.486 वर्ग मीटर (Square Meter)
  * 1 बिस्वा (Biswa) = 1361 वर्ग फीट (Square Feet)
- * 1 बिस्वा (Biswa) = 0.0126486 हैक्टेयर (Hectare)
+ * 1 बिस्वा (Biswa) = 1361 ÷ 10.76 = 126.487 वर्ग मीटर (Square Meter)
+ * 1 बिस्वा (Biswa) = 0.0126487 हैक्टेयर (Hectare)
  * 1 बीघा (Bigha) = 20 बिस्वा (Biswa)
- * 1 बीघा (Bigha) = 0.252972 हैक्टेयर (Hectare)
  * 1 हैक्टेयर (Hectare) = 10,000 वर्ग मीटर (Square Meter)
  */
 
-// Base conversion values (in terms of square meters)
-const BISWA_TO_SQUARE_METER = 126.486;
+// Base conversion values
 const BISWA_TO_SQUARE_FEET = 1361; // Local standard: 1 बिस्वा = exactly 1361 वर्ग फीट
+const BISWA_TO_SQUARE_METER = BISWA_TO_SQUARE_FEET / 10.76; // 1361 ÷ 10.76 ≈ 126.394 वर्ग मीटर
 const BISWANSI_PER_BISWA = 20; // 1 बिस्वा = 20 बिस्वाँसी
-const BISWANSI_TO_SQUARE_METER = BISWA_TO_SQUARE_METER / BISWANSI_PER_BISWA; // 6.3243
+const BISWANSI_TO_SQUARE_METER = BISWA_TO_SQUARE_METER / BISWANSI_PER_BISWA;
 const BIGHA_TO_BISWA = 20;
 const HECTARE_TO_SQUARE_METER = 10000;
-// Derived from local standard (1 biswa = 126.486 sqm = 1361 sqft) for exact consistency
-const SQUARE_FEET_TO_SQUARE_METER = BISWA_TO_SQUARE_METER / BISWA_TO_SQUARE_FEET; // ~0.092936
+const SQUARE_FEET_TO_SQUARE_METER = 1 / 10.76; // 1 वर्ग फीट = 1 ÷ 10.76 वर्ग मीटर
 
 // Derived conversions
 const BIGHA_TO_SQUARE_METER = BIGHA_TO_BISWA * BISWA_TO_SQUARE_METER; // 2529.72
@@ -50,15 +48,7 @@ export function convertValue(value: number, fromUnit: LandUnit): ConversionValue
       squareMeter = value * BIGHA_TO_SQUARE_METER;
       break;
     case 'hectare':
-      // Apply the conditional khatauni logic: 
-      // If value aligns with a multiple of 10 biswa (e.g. 10, 20, 30 biswa / 0.1265, 0.2530 hectare), use the 0.01265 khatauni multiplier
-      // We check if the expected biswa value would be a multiple of 10
-      const approxBiswa = Math.round(value / 0.01265);
-      if (approxBiswa % 10 === 0 && Math.abs(value - (approxBiswa * 0.01265)) < 0.00001) {
-        squareMeter = approxBiswa * BISWA_TO_SQUARE_METER;
-      } else {
-        squareMeter = value * HECTARE_TO_SQUARE_METER;
-      }
+      squareMeter = value * HECTARE_TO_SQUARE_METER;
       break;
     case 'squareFeet':
       squareMeter = value * SQUARE_FEET_TO_SQUARE_METER;
@@ -67,32 +57,13 @@ export function convertValue(value: number, fromUnit: LandUnit): ConversionValue
       squareMeter = 0;
   }
 
-  // Determine hectare based on conditional khatauni logic
-  // Calculate totalBiswa directly
-  const rawBiswa = squareMeter / BISWA_TO_SQUARE_METER;
-  const totalBiswa = rawBiswa; // Keep absolute precision
-
-  let hectare: number;
-  const roundedBiswa = Math.round(totalBiswa);
-
-  // Apply rounded factor only when biswa is exactly a multiple of 10 (10, 20, 30, etc.)
-  // We check if the rounded biswa is a multiple of 10 AND the actual biswa is extremely close to that integer
-  if (roundedBiswa % 10 === 0 && roundedBiswa !== 0 && Math.abs(totalBiswa - roundedBiswa) < 0.00001) {
-    // For exact multiples of 10 biswa, Khatauni uses the rounded 0.01265 factor per biswa
-    hectare = roundedBiswa * 0.01265;
-  } else {
-    // For anything else (1-9, 11-19, 21-29, etc), precise calculation is used
-    // Do not round the hectare calculation inside the system, let formatNumber handle presentation
-    hectare = squareMeter / HECTARE_TO_SQUARE_METER;
-  }
-
   // Convert from square meters to all other units
   return {
     squareMeter: squareMeter,
     biswansi: squareMeter / BISWANSI_TO_SQUARE_METER,
-    biswa: totalBiswa,
+    biswa: squareMeter / BISWA_TO_SQUARE_METER,
     bigha: squareMeter / BIGHA_TO_SQUARE_METER,
-    hectare: hectare,
+    hectare: squareMeter / HECTARE_TO_SQUARE_METER,
     squareFeet: squareMeter / SQUARE_FEET_TO_SQUARE_METER,
   };
 }
