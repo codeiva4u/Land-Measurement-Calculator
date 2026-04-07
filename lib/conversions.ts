@@ -98,14 +98,16 @@ export function formatNumber(value: number, unit?: LandUnit): string {
   let keepDecimals = false; // For units that must always show decimals
 
   if (unit === 'squareMeter') {
-    maxDecimals = 3;
-    keepDecimals = true; // Always show 3 decimals for square meter
+    maxDecimals = 5;
+    keepDecimals = true; // Always show 5 decimals for square meter
   } else if (unit === 'hectare') {
     maxDecimals = 7;
   } else if (unit === 'squareFeet') {
     maxDecimals = 0;
   } else if (unit === 'biswansi') {
-    maxDecimals = 2;
+    maxDecimals = 3;
+  } else if (unit === 'biswa' || unit === 'bigha') {
+    maxDecimals = 5;
   }
 
   // Round to maxDecimals places
