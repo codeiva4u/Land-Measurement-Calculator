@@ -6,15 +6,16 @@ import type { ConversionValues, LandUnit } from '@/types';
  * BASE FORMULAS:
  * 1 बिस्वा (Biswa) = 20 बिस्वाँसी (Biswansi)
  * 1 बिस्वा (Biswa) = 1361 वर्ग फीट (Square Feet)
- * 1 बिस्वा (Biswa) = 126.486 वर्ग मीटर (Square Meter)
- * 1 बिस्वा (Biswa) = 0.0126486 हैक्टेयर (Hectare)
+ * 1 वर्ग फीट (Square Feet) = 1 ÷ 10.76 वर्ग मीटर (Square Meter)
+ * 1 बिस्वा (Biswa) = 1361 ÷ 10.76 = 126.4869... वर्ग मीटर (Square Meter)
+ * 1 बिस्वा (Biswa) = 0.01264869... हैक्टेयर (Hectare)
  * 1 बीघा (Bigha) = 20 बिस्वा (Biswa)
  * 1 हैक्टेयर (Hectare) = 10,000 वर्ग मीटर (Square Meter)
  */
 
 // Base conversion values
 const BISWA_TO_SQUARE_FEET = 1361; // Local standard: 1 बिस्वा = exactly 1361 वर्ग फीट
-const BISWA_TO_SQUARE_METER = 126.486; // Local standard: 1 बिस्वा = exactly 126.486 वर्ग मीटर
+const BISWA_TO_SQUARE_METER = BISWA_TO_SQUARE_FEET / 10.76; // Derived: 1361 ÷ 10.76 = 126.4869... वर्ग मीटर
 const BISWANSI_PER_BISWA = 20; // 1 बिस्वा = 20 बिस्वाँसी
 const BISWANSI_TO_SQUARE_METER = BISWA_TO_SQUARE_METER / BISWANSI_PER_BISWA;
 const BIGHA_TO_BISWA = 20;
@@ -98,10 +99,10 @@ export function formatNumber(value: number, unit?: LandUnit): string {
   let keepDecimals = false; // For units that must always show decimals
 
   if (unit === 'squareMeter') {
-    maxDecimals = 3;
+    maxDecimals = 5;
     keepDecimals = true; // Always show 5 decimals for square meter
   } else if (unit === 'hectare') {
-    maxDecimals = 5;
+    maxDecimals = 9; // वर्ग मीटर (5 decimals) ÷ 10000 = हैक्टेयर (9 decimals needed)
   } else if (unit === 'squareFeet') {
     maxDecimals = 0;
   } else if (unit === 'biswansi') {
